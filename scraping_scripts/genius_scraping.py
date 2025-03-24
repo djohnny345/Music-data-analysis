@@ -9,7 +9,7 @@ API_KEY = 'HvUEBnzib78wk3We0zr0mMIwXCflfCCPwTZIhwo3Vr3B_gSl2aj4GO_oElrh4i1v'
 genius = lyricsgenius.Genius(API_KEY)
 
 # Wczytanie pliku CSV ze Spotify
-spotify_df = pd.read_csv('spotify_tracks.csv')
+spotify_df = pd.read_csv('../data/spotify_tracks.csv')
 
 # Lista na wyniki
 lyrics_data = []
