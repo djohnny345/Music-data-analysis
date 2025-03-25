@@ -6,7 +6,6 @@ import re
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
-
 # 🔹 Pobranie listy stop words (słów, które nie wnoszą wartości)
 nltk.download("stopwords")
 stop_words = set(stopwords.words("english"))
@@ -17,7 +16,7 @@ def clean_lyrics(text):
         return ""
 
     text = text.lower()  # Zamiana na małe litery
-    text = re.sub(r"\[(.*?)\]", "", text) # Usuwam oznaczenia w nawiasach ([refren], [zwrotka])
+    text = re.sub(r"\[.*?\]", "", text) # Usuwam oznaczenia w nawiasach ([refren], [zwrotka])
     text = text.translate(str.maketrans("", "", string.punctuation))  # Usunięcie interpunkcji
     words = text.split()  # Podział na słowa
     words = [word for word in words if word not in stop_words]  # Usunięcie stop words
@@ -31,9 +30,11 @@ def clean_lyrics(text):
 # df_combined.to_csv("../data/combined_tracks_lyrics.csv", index=False)
 # print("✅ Pliki połączone i zapisane jako combined_tracks_lyrics.csv")
 
-df = pd.read_csv("../data/combined_tracks_lyrics.csv")
-df["clean_lyrics"] = df["tekst"].apply(clean_lyrics)
-df.to_csv("../data/cleaned_tracks_lyrics.csv", index=False)
+# df = pd.read_csv("../data/combined_tracks_lyrics.csv")
+# df["clean_lyrics"] = df["tekst"].apply(clean_lyrics)
+# df.to_csv("../data/cleaned_tracks_lyrics.csv", index=False)
+# df.drop(columns=["tekst"], inplace=True)
+# df.to_csv("../data/cleaned_tracks_lyrics.csv", index=False)
 # df = pd.read_csv('lyrics_output')
 # # 🔹 Czyszczenie tekstów w kolumnie "lyrics"
 # df["clean_lyrics"] = df["tekst"].apply(clean_lyrics)
