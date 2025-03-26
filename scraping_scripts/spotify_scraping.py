@@ -4,10 +4,9 @@ import pandas as pd
 import time
 import os
 
-# Dane spotify api
+# Dane Spotify API
 CLIENT_ID = "91272f62712a4549930adfe117ce9ac9"
 CLIENT_SECRET = "b3fcf3941313415ebcaef8cd43930e28"
-
 
 # Pobranie tokena autoryzacyjnego
 def get_access_token():
@@ -25,7 +24,6 @@ def get_access_token():
         print("❌ Błąd autoryzacji!", response.text)
         return None
 
-
 # Pobranie utworów dla podanego roku i gatunku
 def get_tracks(year, genre, access_token, limit=50, max_tracks=1000):
     all_tracks = []
@@ -39,7 +37,6 @@ def get_tracks(year, genre, access_token, limit=50, max_tracks=1000):
         if response.status_code == 200:
             tracks = response.json()["tracks"]["items"]
 
-            # Dodane logowanie, żeby zobaczyć, co zwraca API
             print(f"📊 Wyniki dla {genre} {year}: {len(tracks)} utworów")
 
             if not tracks:
@@ -58,9 +55,8 @@ def get_tracks(year, genre, access_token, limit=50, max_tracks=1000):
 
     return all_tracks
 
-
 # Pobranie i zapisanie danych do CSV
-def get_all_tracks(start_year, end_year, genres, filename="spotify_tracks.csv"):
+def get_all_tracks(start_year, end_year, genres, filename="spotify_tracks_fixed.csv"):
     access_token = get_access_token()
     if not access_token:
         print("❌ Nie udało się uzyskać tokena. Zakończono.")
@@ -68,8 +64,7 @@ def get_all_tracks(start_year, end_year, genres, filename="spotify_tracks.csv"):
 
     all_tracks = []
 
-    # zakres lat: start_year <= end_year
-    for year in range(min(start_year, end_year), max(start_year, end_year) + 1):
+    for year in range(start_year, end_year + 1):
         for genre in genres:
             print(f"📥 Pobieram {genre} z roku {year}...")
             tracks = get_tracks(year, genre, access_token, max_tracks=1000)
@@ -79,16 +74,12 @@ def get_all_tracks(start_year, end_year, genres, filename="spotify_tracks.csv"):
             else:
                 print(f"⚠️ Brak wyników dla {genre} {year}")
 
-    # Zapis do pliku CSV
     if all_tracks:
         df = pd.DataFrame(all_tracks, columns=["Title", "Artist", "Year", "Genre", "Popularity"])
 
-        # Jeśli plik już istnieje, dopisz do niego (mode="a"), w przeciwnym razie utwórz nowy (header=False, jeśli plik istnieje)
-        df.to_csv(filename, mode="a", index=False, encoding="utf-8", header=not os.path.exists(filename))
+        # Dopisywanie do istniejącego pliku zamiast nadpisywania
+        df.to_csv(filename, mode="a", index=False, encoding="utf-8-sig", header=not os.path.exists(filename))
+        print(f"✅ Dodano {len(all_tracks)} utworów do {filename}")
 
-        print(f"✅ Dopisano {len(all_tracks)} utworów do {filename}")
-
-
-# Pobranie danych dla rocka, popu i rapu
-get_all_tracks(2020, 2020, ["rock", "pop"])
-get_all_tracks(2020, 2020, ["rap"])
+# Pobranie danych dla kilku gatunków
+get_all_tracks(2020, 2020, ["rock", "pop", "rap"])
