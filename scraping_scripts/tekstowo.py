@@ -11,7 +11,6 @@ NUM_THREADS = 5  # Liczba wątków
 SAVE_EVERY = 1000  # Zapis co X piosenek
 
 # 🔹 Pobranie listy
-df = pd.read_csv("../data/spotify_url.csv")
 lyrics_data = []  # Lista wyników
 
 # 🔹 Licznik pobranych piosenek
@@ -69,7 +68,6 @@ def get_lyrics(artist, title):
 # 🔹 Funkcja dla wielowątkowości + licznik
 def process_song(index, row):
     global counter  # 🔹 Modyfikujemy globalny licznik
-    artist, title = row["Formatted_Artist"], row["Formatted_Title"]
     lyrics = get_lyrics(artist, title)
 
     if lyrics:
@@ -91,10 +89,8 @@ with tqdm(total=len(df), desc="Pobieranie tekstów") as pbar:
 
             # 🔹 Zapisuj co 1000 piosenek
             if counter % SAVE_EVERY == 0:
-                pd.DataFrame(lyrics_data).to_csv("../data/test.csv",
                                                  index=False)
                 print(f"\n✅ Zapisano {counter} piosenek!")
 
 # 🔹 Finalny zapis
-pd.DataFrame(lyrics_data).to_csv("../data/test.csv", index=False)
 print("\n✅ Pobieranie zakończone! Wszystkie dane zapisane.")
